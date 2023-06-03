@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 13px;
+  background-color: inherit;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-blue-500 rounded-lg;
+}
+::selection {
+  @apply bg-blue-500 text-slate-100;
+}
+.menuTransition {
+  transition: 0.3s all ease-in-out;
+}
+
+.validated .needs-validation,
+.validated textarea {
+  outline: #00cea8;
+  border: 2px solid #00cea8 !important;
+}
+.not-validated .needs-validation,
+.not-validated textarea {
+  outline: #ce0000 !important;
+  border: 1px solid #ce0000 !important;
+}
+
+/* Sidebar */
+.ps-sidebar-root ::-webkit-scrollbar {
+  width: 0px;
+}
+.ps-sidebar-container,
+.ps-submenu-content {
+  transition: 0.3s all ease-in-out;
+  @apply !bg-white dark:!bg-slate-900 !text-gray-400 dark:!text-slate-200;
+}
+.ps-menuitem-root,
+.ps-menu-button {
+  @apply hover:!bg-blue-400/80 hover:!text-slate-100 hover:dark:!bg-slate-800;
+}

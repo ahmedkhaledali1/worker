@@ -1,0 +1,43 @@
+/* tailwind-datagrid */
+.MuiDataGrid-row:nth-child(even) {
+  background-color: #e7f5fe;
+}
+.MuiDataGrid-row:nth-child(odd) {
+  @apply dark:text-slate-100;
+}
+.MuiDataGrid-row {
+  @apply dark:hover:!text-gray-800 dark:hover:!bg-slate-300;
+}
+
+/* DataGridCustom */
+.MuiDataGrid-columnHeaders {
+  background-color: #eeeeee;
+}
+
+.datagrid-container .MuiDataGrid-columnHeaderTitleContainer,
+.datagrid-container .MuiDataGrid-cell {
+  display: flex;
+  justify-content: center;
+}
+
+.datagrid-container .MuiDataGrid-cell[rowindex]:not(.row-number) {
+  justify-content: flex-start;
+}
+
+.datagrid-container .MuiDataGrid-columnsContainer {
+  padding-left: 80px;
+  padding-right: 40px;
+}
+.MuiTablePagination-root {
+  @apply dark:!text-slate-100;
+}
+
+.Mui-selected {
+  @apply !bg-blue-500/50 text-slate-900 dark:text-slate-200 hover:bg-indigo-500/50 transition-all hover:text-slate-400;
+}
+.MuiDataGrid-selectedRowCount {
+  @apply dark:text-slate-100;
+}
+.Mui-disabled {
+  @apply dark:text-gray-400;
+}

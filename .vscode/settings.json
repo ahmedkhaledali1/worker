@@ -1,0 +1,11 @@
+{
+  "eslint.ignoreUntitled": false,
+  "eslint.enable": false,
+  "tailwindCSS.lint.invalidConfigPath": "error",
+  "tailwindCSS.validate": true,
+  "eslint.codeAction.disableRuleComment": {
+    "enable": false,
+    "location": "sameLine",
+    "commentStyle": "block"
+  }
+}
