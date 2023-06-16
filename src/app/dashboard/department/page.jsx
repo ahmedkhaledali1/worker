@@ -146,84 +146,84 @@ const Department = () => {
   // delete function
   const onRowDelete = async (e, row) => {
     e.stopPropagation();
-    console.log("row ID:" + row.id);
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/department/${row.id}`,
-        {
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/occupation/${row.id}`,
+      {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.status);
+      toast.success(`Item with id ${row.id} deleted successfully`);
+      setRows((prevRows) => prevRows.filter((item) => item.id !== row.id));
     } catch (error) {
       console.error(`Error deleting the row: ${error}`);
+      toast.error(`Failed to delete Item with id ${row.id} ${error.message}`);
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/department`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error ${response.status}`);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/department`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        const { department } = await response.json();
-        setRows(
-          department.map(({ company }, index) => ({
-            id: index + 1,
-            name: company.name,
-            type: company.type,
-            email: company.email,
-            email_verified_at: company.email_verified_at,
-            username: company.username,
-            image: company.image || "/assets/sidebar icon.png",
-            phone: company.phone,
-            Company_Name: company.Company_Name,
-            Company_Address: company.Company_Address,
-            Company_Address_2: company.Company_Address_2,
-            City: company.City,
-            Postal_code: company.Postal_code,
-            Country: company.Country,
-            Company_email: company.Company_email,
-            national_number: company.national_number,
-            working_days: company.working_days,
-            date_of_birth: company.date_of_birth,
-            Job_number: company.Job_number,
-            Date_of_employee_registration_in_system:
-              company.Date_of_employee_registration_in_system,
-            Date_of_employee_registration_in_company:
-              company.Date_of_employee_registration_in_company,
-            department_id: company.department_id,
-            Beginning_work: company.Beginning_work,
-            finished_work: company.finished_work,
-            status: company.status,
-            total_salary: company.total_salary,
-            partial_salary: company.partial_salary,
-            bonuses: company.bonuses,
-            overtime: company.overtime,
-            group_id: company.group_id,
-            manger_id: company.manger_id,
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
       }
-    };
 
+      const { department } = await response.json();
+      setRows(
+        department.map(({ company }, index) => ({
+          id: index + 1,
+          name: company.name,
+          type: company.type,
+          email: company.email,
+          email_verified_at: company.email_verified_at,
+          username: company.username,
+          image: company.image || "/assets/sidebar icon.png",
+          phone: company.phone,
+          Company_Name: company.Company_Name,
+          Company_Address: company.Company_Address,
+          Company_Address_2: company.Company_Address_2,
+          City: company.City,
+          Postal_code: company.Postal_code,
+          Country: company.Country,
+          Company_email: company.Company_email,
+          national_number: company.national_number,
+          working_days: company.working_days,
+          date_of_birth: company.date_of_birth,
+          Job_number: company.Job_number,
+          Date_of_employee_registration_in_system:
+            company.Date_of_employee_registration_in_system,
+          Date_of_employee_registration_in_company:
+            company.Date_of_employee_registration_in_company,
+          department_id: company.department_id,
+          Beginning_work: company.Beginning_work,
+          finished_work: company.finished_work,
+          status: company.status,
+          total_salary: company.total_salary,
+          partial_salary: company.partial_salary,
+          bonuses: company.bonuses,
+          overtime: company.overtime,
+          group_id: company.group_id,
+          manger_id: company.manger_id,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [token]);
   const handleDataGridUpdate = async (updatedData, id) => {

@@ -1,18 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/Button";
 import { toast } from "react-toastify";
 import LoadingComponent from "@/components/Loading";
-import { useSession } from "next-auth/react";
 
-export default function ForgotPasswordPage() {
-    const { data: session } = useSession();
-    const [token, setToken] = useState("");
-    useEffect(() => {
-      if (session) {
-        setToken(session.user.token);
-      }
-    }, [session]);
+const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,15 +21,24 @@ export default function ForgotPasswordPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            //   Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(email),
+          body: JSON.stringify({ email }),
         }
       );
-      setSuccess(true);
-      toast.success(`${response.message}`);
+      const data = await response.json();
+      if (
+        response.ok &&
+        data.massege !== "We cant find a user with that email address"
+      ) {
+        setSuccess(true);
+        toast.success(data.massege);
+        console.log(data.massege);
+      } else {
+        setError(data.massege);
+        toast.error(data.massege);
+      }
     } catch (error) {
-      setError(error.message);
+      setError(error.massege);
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +50,10 @@ export default function ForgotPasswordPage() {
         Forgot your password?
       </h1>
       {!success ? (
-        <form className="flex flex-col gap-4" onSubmit={handleResetPassword}>
+        <form
+          className="w-full max-w-lg flex flex-col gap-4"
+          onSubmit={handleResetPassword}
+        >
           <label htmlFor="email" className="text-lg font-semibold">
             Enter your email address:
           </label>
@@ -59,7 +63,7 @@ export default function ForgotPasswordPage() {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`px-4 w-full rounded-md dark:bg-slate-800 dark:placeholder:text-slate-200 focus:outline-blue-400 py-2 ${
+            className={`px-4 rounded-md dark:bg-slate-800 dark:placeholder:text-slate-200 focus:outline-blue-400 py-2 ${
               error && "border-red-500"
             }`}
             required
@@ -77,4 +81,5 @@ export default function ForgotPasswordPage() {
       )}
     </div>
   );
-}
+};
+export default ForgotPasswordPage;

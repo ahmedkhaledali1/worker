@@ -2,13 +2,11 @@
 import { useEffect, useState } from "react";
 import { FiSearch, FiBell, FiMenu } from "react-icons/fi";
 import { useSession, signOut } from "next-auth/react";
-import Image from "next/image";
 import { useProSidebar } from "react-pro-sidebar";
 import { BiChevronLeft } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 import { navLinks } from "@/constants";
 import Link from "next/link";
-
 
 const Navbar = () => {
   const router = useRouter();
@@ -16,8 +14,7 @@ const Navbar = () => {
   const [user, setUser] = useState({ name: "loading...", email: "loading..." });
   useEffect(() => {
     if (session) {
-      setUser(session.user.user);
-      console.log(session.user);
+      setUser(session.user.user || session.user);
     }
   }, [session]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,8 +112,8 @@ const Navbar = () => {
           <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
         </button>
         <button className="w-12 relative" onClick={handleMenu}>
-          <Image
-            src="/assets/jhone.svg"
+          <img
+            src={user.image ? user.image : "/assets/jhone.svg"}
             className="rounded-full"
             fill
             alt="admin"
@@ -131,10 +128,10 @@ const Navbar = () => {
         {showMenu && (
           <div className="absolute bg-gradient-to-tr from-slate-50 to-slate-200 dark:text-slate-900 shadow-md p-2 rounded-md mt-2 top-[80%] right-[10%] z-10">
             <button className="block w-full text-left p-1 rounded-md hover:bg-gray-100">
-              Profile
+              <Link href="/dashboard/profile">Profile</Link>
             </button>
             <button className="block w-full text-left p-1 rounded-md hover:bg-gray-100">
-              My account
+              <Link href="/dashboard/account">My account</Link>
             </button>
             <button
               className="block w-full text-left p-1 rounded-md hover:bg-gray-100"

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { toast } from "react-toastify";
 
-const Holidays = () => {
+const Orders = () => {
   const { data: session } = useSession();
   const [token, setToken] = useState("");
   useEffect(() => {
@@ -19,13 +19,14 @@ const Holidays = () => {
   const [rows, setRows] = useState([]);
 
   const keys = [
-    "name",
-    "image",
-    "type",
-    "number_of_day",
-    "start_date",
-    "end_date",
-    "user_id",
+    "title",
+    "customer_id",
+    "details",
+    "notes",
+    "date",
+    "begin_date",
+    "company_id",
+    "group_id",
   ];
 
   const columns = [
@@ -55,49 +56,30 @@ const Holidays = () => {
     });
   });
 
-  columns.push(
-    {
-      field: "image",
-      headerName: "Image",
-      width: 170,
-      headerClassName: "datagrid-header",
-      cellClassName: "datagrid-cell",
-      renderCell: (params) => {
-        return (
-          <img
-            key={params.row.id}
-            src={params.row.image}
-            alt={params.row.name}
-            className="w-full object-contain"
-          />
-        );
-      },
+  columns.push({
+    field: "actions",
+    headerName: "Actions",
+    width: 170,
+    renderCell: (params) => {
+      return (
+        <ButtonComponent
+          onClick={(e) => onRowDelete(e, params.row)}
+          content="Delete"
+          bgColor="!bg-red-500/30"
+          fontColor="!text-red-500"
+          buttonType="filled"
+          fontWeight="!font-bold"
+        />
+      );
     },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 170,
-      renderCell: (params) => {
-        return (
-          <ButtonComponent
-            onClick={(e) => onRowDelete(e, params.row)}
-            content="Delete"
-            bgColor="!bg-red-500/30"
-            fontColor="!text-red-500"
-            buttonType="filled"
-            fontWeight="!font-bold"
-          />
-        );
-      },
-    }
-  );
+  });
 
   // delete function
   const onRowDelete = async (e, row) => {
     e.stopPropagation();
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/occupation/${row.id}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/order/${row.id}`,
       {
           headers: {
             "Content-Type": "application/json",
@@ -112,9 +94,8 @@ const Holidays = () => {
       toast.error(`Failed to delete Item with id ${row.id} ${error.message}`);
     }
   };
-
   const fetchData = async () => {
-    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/holiday`;
+    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/order`;
 
     try {
       const response = await fetch(url, {
@@ -129,17 +110,18 @@ const Holidays = () => {
         throw new Error(`HTTP error ${response.status}`);
       }
 
-      const { holiday } = await response.json();
+      const { order } = await response.json();
       setRows(
-        holiday.map((user) => ({
-          id: user.id,
-          name: user.name,
-          type: user.type,
-          image: user.image,
-          number_of_day: user.number_of_day,
-          start_date: user.start_date,
-          end_date: user.end_date,
-          user_id: user.user_id,
+        order.map((item) => ({
+          id: item.id,
+          title: item.title,
+          details: item.details,
+          notes: item.notes,
+          date: item.price,
+          begin_date: item.begin_date,
+          customer_id: item.customer_id,
+          company_id: item.company_id,
+          group_id: item.group_id,
         }))
       );
     } catch (error) {
@@ -148,11 +130,11 @@ const Holidays = () => {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [token]);
   const handleDataGridUpdate = async (updatedData, id) => {
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/holiday/${id}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/order/${id}`,
         JSON.stringify(updatedData),
         {
           headers: {
@@ -193,14 +175,16 @@ const Holidays = () => {
       <div className="flex items-center flex-wrap justify-between my-3">
         <div>
           <h1 className="text-2xl font-semibold mb-2 dark:text-slate-100">
-            Holidays
+            Orders
           </h1>
-          <p className="text-sm text-gray-400">Holidays List</p>
+          <p className="text-sm text-gray-400">
+            Total Number Of orders ({rows.length})
+          </p>
         </div>
-        <Link href="/dashboard/add-new-holiday">
+        <Link href="/dashboard/add-new-order">
           <ButtonComponent
             icon={<IoMdAdd />}
-            content="Add new holiday"
+            content="Add new order"
             buttonType="filled"
             additionalClasses="mt-3 md:mt-0 w-full md:w-auto"
           />
@@ -215,4 +199,4 @@ const Holidays = () => {
   );
 };
 
-export default Holidays;
+export default Orders;

@@ -97,62 +97,61 @@ const DeparturesDataGrid = () => {
   // delete function
   const onRowDelete = async (e, row) => {
     e.stopPropagation();
-    console.log("row ID:" + row.id);
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/debt/${row.id}`,
-        {
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/occupation/${row.id}`,
+      {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.status);
+      toast.success(`Item with id ${row.id} deleted successfully`);
+      setRows((prevRows) => prevRows.filter((item) => item.id !== row.id));
     } catch (error) {
       console.error(`Error deleting the row: ${error}`);
+      toast.error(`Failed to delete Item with id ${row.id} ${error.message}`);
     }
   };
 
-  useEffect(() => {
-    if (!token) return;
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/debt`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error ${response.status}`);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/debt`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        const { debt } = await response.json();
-        setRows(
-          debt.map((user) => ({
-            id: user.id,
-            employee_name: user.employee_name,
-            employee_id: user.employee_id,
-            Job_number: user.Job_number,
-            national_number: user.national_number,
-            value: user.value,
-            image: user.image,
-            description: user.description,
-            specialization: user.specialization,
-            date: user.date,
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
       }
-    };
 
+      const { debt } = await response.json();
+      setRows(
+        debt.map((user) => ({
+          id: user.id,
+          employee_name: user.employee_name,
+          employee_id: user.employee_id,
+          Job_number: user.Job_number,
+          national_number: user.national_number,
+          value: user.value,
+          image: user.image,
+          description: user.description,
+          specialization: user.specialization,
+          date: user.date,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [token]);
   const handleDataGridUpdate = async (updatedData, id) => {

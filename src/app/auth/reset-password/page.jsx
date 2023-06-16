@@ -4,14 +4,16 @@ import Button from "@/components/Button";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 
-export default function ResetPasswordPage() {
+const ResetPasswordPage = () => {
   const { data: session } = useSession();
   const [token, setToken] = useState("");
+
   useEffect(() => {
     if (session) {
       setToken(session.user.token);
     }
   }, [session]);
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -38,8 +40,13 @@ export default function ResetPasswordPage() {
           body: JSON.stringify(confirmPassword),
         }
       );
-      setSuccess(true);
-      toast.success(`${response.message}`);
+      const data = await response.json();
+      if (response.ok) {
+        setSuccess(true);
+        toast.success(data.message);
+      } else {
+        setError(data.message);
+      }
     } catch (error) {
       setError(error.message);
     } finally {
@@ -53,14 +60,14 @@ export default function ResetPasswordPage() {
         Reset your password
       </h1>
       {!success ? (
-        <form className="flex flex-col gap-4" onSubmit={handleResetPassword}>
+        <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={handleResetPassword}>
           <label htmlFor="password" className="text-lg font-semibold">
             New password:
           </label>
           <input
             type="password"
             id="password"
-            placeholder="Enter Your Password"
+            placeholder="Your Password at least 8 characters"
             value={password}
             minLength={8}
             onChange={(e) => setPassword(e.target.value)}
@@ -95,4 +102,6 @@ export default function ResetPasswordPage() {
       )}
     </div>
   );
-}
+};
+
+export default ResetPasswordPage;

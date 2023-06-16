@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdVisibilityOff, MdWavingHand, MdVisibility } from "react-icons/md";
 import Button from "@/components/Button";
 import Link from "next/link";
@@ -7,16 +7,8 @@ import { toast } from "react-toastify";
 import LoadingComponent from "@/components/Loading";
 import { signUpSchema } from "@/schema/userSchema";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 export default function Page() {
-  const { data: session } = useSession();
-  const [token, setToken] = useState("");
-  useEffect(() => {
-    if (session) {
-      setToken(session.user.token);
-    }
-  }, [session]);
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -80,7 +72,6 @@ export default function Page() {
       if (!response.ok) {
         throw new Error("Error registering user.");
       }
-      const data = await response.json();
       setLoading(false);
       toast.success("registered successfully.");
       router.push("/dashboard");

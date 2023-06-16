@@ -12,6 +12,7 @@ import { signIn } from "next-auth/react";
 import { loginUserSchema } from "@/schema/userSchema";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import { FcGoogle } from "react-icons/fc";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +22,11 @@ const LoginPage = () => {
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
-
+  const handleGoogleLogin = async () => {
+    signIn("google", {
+      callbackUrl: `/dashboard`,
+    });
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -47,7 +52,7 @@ const LoginPage = () => {
     });
     if (!user.error) {
       handleRememberUser();
-      router.push("/dashboard");
+      router.push(`/dashboard`);
     } else {
       setError([user.error]);
       setIsLoading(false);
@@ -159,10 +164,20 @@ const LoginPage = () => {
           </h3>
         </div>
 
-        <Button
-          onClick={handleLogin}
-          content={loading ? <Loading /> : "Login"}
-        />
+        <div className="flex flex-col text-center gap-5">
+          <Button
+            onClick={handleLogin}
+            content={loading ? <Loading /> : "Login"}
+          />
+          <p className="text-xl">OR</p>
+          <Button
+            onClick={handleGoogleLogin}
+            content={"Sign with Google"}
+            type="button"
+            buttonType="filled"
+            icon={<FcGoogle size={27} />}
+          />
+        </div>
       </form>
       <p className="text-gray-400 relative bottom-0 text-center">
         You do not have an account?{" "}

@@ -93,66 +93,67 @@ const CustomersDataGrid = () => {
     e.stopPropagation();
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/customer/${row.id}`,
-        {
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/occupation/${row.id}`,
+      {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.status);
+      toast.success(`Item with id ${row.id} deleted successfully`);
+      setRows((prevRows) => prevRows.filter((item) => item.id !== row.id));
     } catch (error) {
       console.error(`Error deleting the row: ${error}`);
+      toast.error(`Failed to delete Item with id ${row.id} ${error.message}`);
+    }
+  };
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/customer`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const { customer } = await response.json();
+      setRows(
+        customer.map((user) => ({
+          id: user.id,
+          company_id: user.company_id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          company_name: user.company_name,
+          phone: user.phone,
+          email: user.email,
+          website: user.website,
+          facebook_link: user.facebook_link,
+          tweeter_link: user.tweeter_link,
+          youtube_link: user.youtube_link,
+          linkedin_link: user.inkedin_link,
+          instgram_link: user.instgram_link,
+          address_1: user.address_1,
+          address_2: user.address_2,
+          town: user.town,
+          interrupt: user.interrupt,
+          zipcode: user.zipcode,
+          country: user.country,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/customer`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error ${response.status}`);
-        }
-
-        const { customer } = await response.json();
-        setRows(
-          customer.map((user) => ({
-            id: user.id,
-            company_id: user.company_id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            company_name: user.company_name,
-            phone: user.phone,
-            email: user.email,
-            website: user.website,
-            facebook_link: user.facebook_link,
-            tweeter_link: user.tweeter_link,
-            youtube_link: user.youtube_link,
-            linkedin_link: user.inkedin_link,
-            instgram_link: user.instgram_link,
-            address_1: user.address_1,
-            address_2: user.address_2,
-            town: user.town,
-            interrupt: user.interrupt,
-            zipcode: user.zipcode,
-            country: user.country,
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData();
   }, [token]);
   const handleDataGridUpdate = async (updatedData, id) => {

@@ -83,59 +83,60 @@ const InvoicesDataGrid = () => {
     e.stopPropagation();
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/invoice/${row.id}`,
-        {
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/occupation/${row.id}`,
+      {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.status);
+      toast.success(`Item with id ${row.id} deleted successfully`);
+      setRows((prevRows) => prevRows.filter((item) => item.id !== row.id));
     } catch (error) {
       console.error(`Error deleting the row: ${error}`);
+      toast.error(`Failed to delete Item with id ${row.id} ${error.message}`);
+    }
+  };
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/invoice`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const { invoice } = await response.json();
+      setRows(
+        invoice.map((user) => ({
+          id: user.id,
+          company_id: user.company_id,
+          customer_id: user.customer_id,
+          title: user.title,
+          date: user.date,
+          remaining_amount: user.remaining_amount,
+          order_id: user.order_id,
+          value: user.value,
+          discount: user.discount,
+          tax: user.tax,
+          total: user.total,
+          massage: user.massage,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/invoice`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error ${response.status}`);
-        }
-
-        const { invoice } = await response.json();
-        setRows(
-          invoice.map((user) => ({
-            id: user.id,
-            company_id: user.company_id,
-            customer_id: user.customer_id,
-            title: user.title,
-            date: user.date,
-            remaining_amount: user.remaining_amount,
-            order_id: user.order_id,
-            value: user.value,
-            discount: user.discount,
-            tax: user.tax,
-            total: user.total,
-            massage: user.massage,
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData();
   }, [token]);
   const handleDataGridUpdate = async (updatedData, id) => {

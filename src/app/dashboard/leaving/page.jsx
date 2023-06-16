@@ -142,82 +142,82 @@ const LeavingDataGrid = () => {
   // delete function
   const onRowDelete = async (e, row) => {
     e.stopPropagation();
-    console.log("row ID:" + row.id);
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/user/${row.id}`,
-        {
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/occupation/${row.id}`,
+      {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.status);
+      toast.success(`Item with id ${row.id} deleted successfully`);
+      setRows((prevRows) => prevRows.filter((item) => item.id !== row.id));
     } catch (error) {
       console.error(`Error deleting the row: ${error}`);
+      toast.error(`Failed to delete Item with id ${row.id} ${error.message}`);
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/user`,
-          {
-            headers: {
-              method: "GET",
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error ${response.status}`);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/user`,
+        {
+          headers: {
+            method: "GET",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        const { user } = await response.json();
-        setRows(
-          user.map((user) => ({
-            id: user.id,
-            name: user.name,
-            type: user.type,
-            email: user.email,
-            username: user.username || "username@2002",
-            image: user.image || "/assets/sidebar icon.png",
-            phone: user.phone || 1234,
-            Company_Name: user.Company_Name || 1234,
-            Company_Address: user.Company_Address || 1234,
-            City: user.City || "Ohio",
-            Postal_code: user.Postal_code || 1234,
-            Country: user.Country || 1234,
-            Company_email: user.Company_email || "example@gmail.com",
-            national_number: user.national_number || 1234,
-            working_days: user.working_days || 1234,
-            date_of_birth: user.date_of_birth || "1997-08-31",
-            Job_number: user.Job_number || 1234,
-            Date_of_employee_registration_in_system:
-              user.Date_of_employee_registration_in_system || "2023-07-18",
-            Date_of_employee_registration_in_company:
-              user.Date_of_employee_registration_in_company || "2023-07-18",
-            department_id: user.department_id || 1234,
-            Beginning_work: user.Beginning_work || 1234,
-            finished_work: user.finished_work || 1234,
-            status: user.status,
-            total_salary: user.total_salary || 1234,
-            partial_salary: user.partial_salary || 1234,
-            bonuses: user.bonuses || 1234,
-            overtime: user.overtime || 1234,
-            group_id: user.group_id || 1234,
-            manger_id: user.manger_id || 1234,
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
       }
-    };
 
+      const { user } = await response.json();
+      setRows(
+        user.map((user) => ({
+          id: user.id,
+          name: user.name,
+          type: user.type,
+          email: user.email,
+          username: user.username || "username@2002",
+          image: user.image || "/assets/sidebar icon.png",
+          phone: user.phone || 1234,
+          Company_Name: user.Company_Name || 1234,
+          Company_Address: user.Company_Address || 1234,
+          City: user.City || "Ohio",
+          Postal_code: user.Postal_code || 1234,
+          Country: user.Country || 1234,
+          Company_email: user.Company_email || "example@gmail.com",
+          national_number: user.national_number || 1234,
+          working_days: user.working_days || 1234,
+          date_of_birth: user.date_of_birth || "1997-08-31",
+          Job_number: user.Job_number || 1234,
+          Date_of_employee_registration_in_system:
+            user.Date_of_employee_registration_in_system || "2023-07-18",
+          Date_of_employee_registration_in_company:
+            user.Date_of_employee_registration_in_company || "2023-07-18",
+          department_id: user.department_id || 1234,
+          Beginning_work: user.Beginning_work || 1234,
+          finished_work: user.finished_work || 1234,
+          status: user.status,
+          total_salary: user.total_salary || 1234,
+          partial_salary: user.partial_salary || 1234,
+          bonuses: user.bonuses || 1234,
+          overtime: user.overtime || 1234,
+          group_id: user.group_id || 1234,
+          manger_id: user.manger_id || 1234,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [token]);
   const handleDataGridUpdate = async (updatedData, id) => {
