@@ -1,22 +1,22 @@
-'use client'
-import { useState, useEffect } from "react";
-import { navLinks } from "@/constants";
-import Link from "next/link";
-import { FaCog, FaSignOutAlt } from "react-icons/fa";
+'use client';
+import { useState, useEffect } from 'react';
+import { navLinks } from '@/constants';
+import Link from 'next/link';
+import { FaCog, FaSignOutAlt } from 'react-icons/fa';
 import {
   Sidebar,
   Menu,
   MenuItem,
   SubMenu,
   useProSidebar,
-} from "react-pro-sidebar";
-import { useTheme } from "next-themes";
-import { FiMonitor, FiMoon, FiSun } from "react-icons/fi";
-import { BsMoonStarsFill } from "react-icons/bs";
-import { signOut } from "next-auth/react";
-import LoadingComponent from "@/components/Loading";
-import ConfirmModal from "@/components/ConfirmModal";
-import { toast } from "react-toastify";
+} from 'react-pro-sidebar';
+import { useTheme } from 'next-themes';
+import { FiMonitor, FiMoon, FiSun } from 'react-icons/fi';
+import { BsMoonStarsFill } from 'react-icons/bs';
+import { signOut } from 'next-auth/react';
+import LoadingComponent from '@/components/Loading';
+import ConfirmModal from '@/components/ConfirmModal';
+import { toast } from 'react-toastify';
 
 const CustomSidebar = () => {
   const { collapsed } = useProSidebar();
@@ -33,7 +33,7 @@ const CustomSidebar = () => {
       setShowModal(false);
       location.reload();
     } catch (error) {
-      console.log("Error signing out:", error);
+      console.log('Error signing out:', error);
     }
   };
 
@@ -61,7 +61,7 @@ const CustomSidebar = () => {
   useEffect(() => {
     if (showModal) {
       toast.warning(confirmModal, {
-        className: "dark:bg-slate-800",
+        className: 'dark:bg-slate-800',
         onClose: () => setShowModal(false), // close the modal when the toast is closed
       });
     }
@@ -82,24 +82,28 @@ const CustomSidebar = () => {
           </div>
         )}
 
-        <Menu
-        >
+        <Menu>
           {/* Theme mode toggle buttons */}
           <SubMenu icon={<BsMoonStarsFill />} label="Toggle mode">
-            <MenuItem onClick={() => setTheme("dark")} icon={<FiMoon />}>
+            <MenuItem onClick={() => setTheme('dark')} icon={<FiMoon />}>
               Dark
             </MenuItem>
-            <MenuItem onClick={() => setTheme("light")} icon={<FiSun />}>
+            <MenuItem onClick={() => setTheme('light')} icon={<FiSun />}>
               Light
             </MenuItem>
-            <MenuItem onClick={() => setTheme("system")} icon={<FiMonitor />}>
+            <MenuItem onClick={() => setTheme('system')} icon={<FiMonitor />}>
               System
             </MenuItem>
           </SubMenu>
           {navLinks.map((navItem, index) => {
             if (navItem.children) {
               return (
-                <SubMenu key={index} icon={navItem.icon} label={navItem.name} title={navItem.name}>
+                <SubMenu
+                  key={index}
+                  icon={navItem.icon}
+                  label={navItem.name}
+                  title={navItem.name}
+                >
                   {navItem.children.map((submenuItem, submenuIndex) => (
                     <MenuItem
                       key={submenuIndex}
@@ -113,7 +117,12 @@ const CustomSidebar = () => {
               );
             } else {
               return (
-                <MenuItem key={index} component={<Link href={navItem.link} />} icon={navItem.icon} title={navItem.name}>
+                <MenuItem
+                  key={index}
+                  component={<Link href={navItem.link} />}
+                  icon={navItem.icon}
+                  title={navItem.name}
+                >
                   {navItem.name}
                 </MenuItem>
               );
@@ -130,7 +139,7 @@ const CustomSidebar = () => {
               icon={loading ? <LoadingComponent /> : <FaSignOutAlt />}
               onClick={handleSignOutClick}
             >
-              {loading ? "Signing out..." : "Logout"}
+              {loading ? 'Signing out...' : 'Logout'}
             </MenuItem>
           </div>
         </Menu>
